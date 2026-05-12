@@ -32,31 +32,38 @@ st.markdown("Esta aplicación predice la probabilidad de que un estudiante deser
 
 st.sidebar.header("Parámetros de Entrada")
 
-# --- Input Features (Customize these based on your model's exact features) ---
-# Example: Sliders for numerical features
+# --- Input Features (Now aligned with the model's expected features) ---
+# Based on the error, the model expects:
+# 'edad', 'acceso_internet', 'asistencia', 'horas_estudio', 'materias_perdidas', 'nivel_socioeconomico'
+
+# 'edad' seems to be correct, keeping it.
 age = st.sidebar.slider("Edad del Estudiante", 18, 60, 20)
-academic_performance = st.sidebar.slider("Rendimiento Académico (GPA promedio)", 0.0, 5.0, 3.5, 0.1)
-credits_enrolled = st.sidebar.slider("Créditos Matriculados por Semestre", 5, 30, 15)
 
-# Example: Selectboxes for categorical features
-gender = st.sidebar.selectbox("Género", ['Masculino', 'Femenino', 'Otro'])
-financial_aid = st.sidebar.selectbox("Recibe Ayuda Financiera", ['Sí', 'No'])
-previous_education = st.sidebar.selectbox("Nivel Educativo Previo", ['Bachillerato', 'Técnico', 'Licenciatura (incompleta)'])
+# New: 'acceso_internet'
+acceso_internet = st.sidebar.selectbox("¿Tiene acceso a internet?", ['Sí', 'No'])
+acceso_internet_mapping = {'Sí': 1, 'No': 0}
 
-# Map categorical inputs to numerical/encoded values as your model expects
-# You MUST adjust this mapping according to your model's training data encoding
-gender_mapping = {'Masculino': 0, 'Femenino': 1, 'Otro': 2}
-financial_aid_mapping = {'Sí': 1, 'No': 0}
-previous_education_mapping = {'Bachillerato': 0, 'Técnico': 1, 'Licenciatura (incompleta)': 2}
+# New: 'asistencia' (e.g., attendance percentage)
+asistencia = st.sidebar.slider("Porcentaje de Asistencia (%)", 0, 100, 90)
+
+# New: 'horas_estudio' (e.g., hours per week)
+horas_estudio = st.sidebar.slider("Horas de Estudio Semanales", 0, 50, 15)
+
+# New: 'materias_perdidas' (e.g., number of failed courses)
+materias_perdidas = st.sidebar.slider("Número de Materias Perdidas", 0, 10, 0)
+
+# New: 'nivel_socioeconomico'
+nivel_socioeconomico = st.sidebar.selectbox("Nivel Socioeconómico", ['Bajo', 'Medio', 'Alto'])
+nivel_socioeconomico_mapping = {'Bajo': 0, 'Medio': 1, 'Alto': 2}
 
 # Create a dictionary for the input features
 input_data = {
     'edad': age,
-    'rendimiento_academico': academic_performance,
-    'creditos_matriculados': credits_enrolled,
-    'genero': gender_mapping[gender],
-    'ayuda_financiera': financial_aid_mapping[financial_aid],
-    'educacion_previa': previous_education_mapping[previous_education]
+    'acceso_internet': acceso_internet_mapping[acceso_internet],
+    'asistencia': asistencia,
+    'horas_estudio': horas_estudio,
+    'materias_perdidas': materias_perdidas,
+    'nivel_socioeconomico': nivel_socioeconomico_mapping[nivel_socioeconomico]
 }
 
 # Convert input data to a Pandas DataFrame

@@ -29,41 +29,49 @@ st.markdown("Esta aplicación predice la probabilidad de que un estudiante deser
 
 st.sidebar.header("Parámetros de Entrada")
 
-# --- Input Features ---
-# Existing features from previous iterations
+# --- Input Features (Ordered as requested) ---
+# edad
 age = st.sidebar.slider("Edad del Estudiante", 18, 60, 20)
+
+# promedio
 promedio = st.sidebar.slider("Promedio Académico", 0.0, 5.0, 3.5, 0.1)
 
+# asistencia
+asistencia = st.sidebar.slider("Porcentaje de Asistencia", 0, 100, 80)
+
+# horas_estudio
+horas_estudio = st.sidebar.slider("Horas de Estudio Semanales", 0, 50, 15)
+
+# uso_plataforma
+uso_plataforma = st.sidebar.slider("Horas de Uso de la Plataforma Semanal", 0, 40, 10)
+
+# materias_perdidas
+materias_perdidas = st.sidebar.slider("Número de Materias Perdidas", 0, 10, 0)
+
+# nivel_socioeconomico
+nivel_socioeconomico = st.sidebar.selectbox("Nivel Socioeconómico", ['Bajo', 'Medio', 'Alto'])
+nivel_socioeconomico_mapping = {'Bajo': 0, 'Medio': 1, 'Alto': 2}
+
+# trabaja
 trabaja = st.sidebar.selectbox("¿El estudiante trabaja?", ['No', 'Sí'])
 trabaja_mapping = {'No': 0, 'Sí': 1}
 
-uso_plataforma = st.sidebar.slider("Horas de Uso de la Plataforma Semanal", 0, 40, 10)
-
-# NEW FEATURES REQUESTED BY USER
+# acceso_internet
 acceso_internet = st.sidebar.selectbox("Acceso a Internet", ['Sí', 'No'])
 acceso_internet_mapping = {'Sí': 1, 'No': 0}
-
-asistencia = st.sidebar.slider("Porcentaje de Asistencia", 0, 100, 80)
-
-horas_estudio = st.sidebar.slider("Horas de Estudio Semanales", 0, 50, 15)
-
-materias_perdidas = st.sidebar.slider("Número de Materias Perdidas", 0, 10, 0)
-
-nivel_socioeconomico = st.sidebar.selectbox("Nivel Socioeconómico", ['Bajo', 'Medio', 'Alto'])
-nivel_socioeconomico_mapping = {'Bajo': 0, 'Medio': 1, 'Alto': 2}
 
 
 # Create a dictionary for the input features
 input_data = {
     'edad': age,
     'promedio': promedio,
-    'trabaja': trabaja_mapping[trabaja],
-    'uso_plataforma': uso_plataforma,
-    'acceso_internet': acceso_internet_mapping[acceso_internet],
     'asistencia': asistencia,
     'horas_estudio': horas_estudio,
+    'uso_plataforma': uso_plataforma,
     'materias_perdidas': materias_perdidas,
-    'nivel_socioeconomico': nivel_socioeconomico_mapping[nivel_socioeconomico]
+    'nivel_socioeconomico': nivel_socioeconomico_mapping[nivel_socioeconomico],
+    'trabaja': trabaja_mapping[trabaja],
+    'acceso_internet': acceso_internet_mapping[acceso_internet]
 }
 
 # Convert input data to a Pandas DataFrame

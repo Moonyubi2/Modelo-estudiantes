@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import pickle
+import joblib # Changed from pickle to joblib
 import numpy as np
 
 # --- Load the Model ---
@@ -8,13 +8,11 @@ import numpy as np
 def load_model():
     try:
         with open('modelo_desercion.pkl', 'rb') as file:
-            model = pickle.load(file)
+            model = joblib.load(file) # Changed from pickle.load to joblib.load
         return model
     except FileNotFoundError:
-        # Instead of st.error and st.stop here, return None and handle outside
         return None
     except Exception as e:
-        # Use st.exception for detailed error reporting in Streamlit
         st.exception(e)
         return None
 
@@ -24,7 +22,7 @@ model = load_model()
 # If model loading failed, display an error and stop the app
 if model is None:
     st.error("ERROR CRÍTICO: No se pudo cargar el modelo. La aplicación no puede continuar.")
-    st.stop() # This st.stop will now be called after initial Streamlit setup
+    st.stop()
 
 # --- Streamlit App Layout ---
 st.set_page_config(page_title="Predicción de Deserción Estudiantil", layout="centered")
@@ -58,10 +56,7 @@ input_data = {
     'creditos_matriculados': credits_enrolled,
     'genero': gender_mapping[gender],
     'ayuda_financiera': financial_aid_mapping[financial_aid],
-    'educacion_previa': previous_education_mapping[previous_education],
-    # Add more features here if your model requires them
-    # e.g., 'ingresos_familiares': st.sidebar.slider("Ingresos Familiares", 0, 100000, 30000)
-    # e.g., 'distancia_casa': st.sidebar.slider("Distancia de Casa (km)", 0, 200, 10)
+    'educacion_previa': previous_education_mapping[previous_education]
 }
 
 # Convert input data to a Pandas DataFrame

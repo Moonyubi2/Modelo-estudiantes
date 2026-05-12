@@ -5,20 +5,26 @@ import numpy as np
 
 # --- Load the Model ---
 # Ensure 'modelo_desercion.pkl' is in the same directory as this script
-@st.cache_resource
 def load_model():
     try:
         with open('modelo_desercion.pkl', 'rb') as file:
             model = pickle.load(file)
         return model
     except FileNotFoundError:
-        st.error("Error: 'modelo_desercion.pkl' not found. Please ensure the model file is in the correct directory.")
-        st.stop()
+        # Instead of st.error and st.stop here, return None and handle outside
+        return None
     except Exception as e:
-        st.error(f"Error loading the model: {e}")
-        st.stop()
+        # Use st.exception for detailed error reporting in Streamlit
+        st.exception(e)
+        return None
 
+# Load the model directly
 model = load_model()
+
+# If model loading failed, display an error and stop the app
+if model is None:
+    st.error("ERROR CRÍTICO: No se pudo cargar el modelo. La aplicación no puede continuar.")
+    st.stop() # This st.stop will now be called after initial Streamlit setup
 
 # --- Streamlit App Layout ---
 st.set_page_config(page_title="Predicción de Deserción Estudiantil", layout="centered")

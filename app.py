@@ -1,14 +1,13 @@
 import streamlit as st
 import pandas as pd
-import joblib # Changed from pickle to joblib
+import joblib
 import numpy as np
 
 # --- Load the Model ---
-# Ensure 'modelo_desercion.pkl' is in the same directory as this script
 def load_model():
     try:
         with open('modelo_desercion.pkl', 'rb') as file:
-            model = joblib.load(file) # Changed from pickle.load to joblib.load
+            model = joblib.load(file)
         return model
     except FileNotFoundError:
         return None
@@ -16,10 +15,8 @@ def load_model():
         st.exception(e)
         return None
 
-# Load the model directly
 model = load_model()
 
-# If model loading failed, display an error and stop the app
 if model is None:
     st.error("ERROR CRÍTICO: No se pudo cargar el modelo. La aplicación no puede continuar.")
     st.stop()
@@ -32,33 +29,44 @@ st.markdown("Esta aplicación predice la probabilidad de que un estudiante deser
 
 st.sidebar.header("Parámetros de Entrada")
 
-# --- Input Features (Now aligned with the model's expected features) ---
-# Based on the latest error, the model expects:
-# 'edad', 'promedio', 'trabaja', 'uso_plataforma'
-
-# 'edad' seems to be correct, keeping it.
+# --- Input Features ---
+# Existing features from previous iterations
 age = st.sidebar.slider("Edad del Estudiante", 18, 60, 20)
-
-# New: 'promedio' (e.g., GPA or average grade)
 promedio = st.sidebar.slider("Promedio Académico", 0.0, 5.0, 3.5, 0.1)
 
-# New: 'trabaja' (binary: 0 for No, 1 for Yes)
 trabaja = st.sidebar.selectbox("¿El estudiante trabaja?", ['No', 'Sí'])
 trabaja_mapping = {'No': 0, 'Sí': 1}
 
-# New: 'uso_plataforma' (e.g., hours per day/week on platform)
 uso_plataforma = st.sidebar.slider("Horas de Uso de la Plataforma Semanal", 0, 40, 10)
+
+# NEW FEATURES REQUESTED BY USER
+acceso_internet = st.sidebar.selectbox("Acceso a Internet", ['Sí', 'No'])
+acceso_internet_mapping = {'Sí': 1, 'No': 0}
+
+asistencia = st.sidebar.slider("Porcentaje de Asistencia", 0, 100, 80)
+
+horas_estudio = st.sidebar.slider("Horas de Estudio Semanales", 0, 50, 15)
+
+materias_perdidas = st.sidebar.slider("Número de Materias Perdidas", 0, 10, 0)
+
+nivel_socioeconomico = st.sidebar.selectbox("Nivel Socioeconómico", ['Bajo', 'Medio', 'Alto'])
+nivel_socioeconomico_mapping = {'Bajo': 0, 'Medio': 1, 'Alto': 2}
+
 
 # Create a dictionary for the input features
 input_data = {
     'edad': age,
     'promedio': promedio,
     'trabaja': trabaja_mapping[trabaja],
-    'uso_plataforma': uso_plataforma
+    'uso_plataforma': uso_plataforma,
+    'acceso_internet': acceso_internet_mapping[acceso_internet],
+    'asistencia': asistencia,
+    'horas_estudio': horas_estudio,
+    'materias_perdidas': materias_perdidas,
+    'nivel_socioeconomico': nivel_socioeconomico_mapping[nivel_socioeconomico]
 }
 
 # Convert input data to a Pandas DataFrame
-# Ensure the column names exactly match the feature names used during model training
 features_df = pd.DataFrame([input_data])
 
 st.subheader("Datos de Entrada:")
@@ -67,13 +75,13 @@ st.write(features_df)
 # --- Prediction ---
 if st.sidebar.button("Realizar Predicción"):
     try:
-        prediction_proba = model.predict_proba(features_df)[:, 1] # Probability of desertion
+        prediction_proba = model.predict_proba(features_df)[:, 1]
         prediction = model.predict(features_df)[0]
 
         st.subheader("Resultado de la Predicción:")
         st.write(f"Probabilidad de Deserción: **{prediction_proba[0]:.2%}**")
 
-        if prediction == 1: # Assuming 1 means desertion, 0 means no desertion
+        if prediction == 1:
             st.error("¡ALTO RIESGO DE DESERCIÓN! 🚨")
             st.write("Este estudiante tiene una alta probabilidad de desertar. Se recomienda una intervención temprana.")
         else:

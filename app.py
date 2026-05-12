@@ -33,37 +33,28 @@ st.markdown("Esta aplicación predice la probabilidad de que un estudiante deser
 st.sidebar.header("Parámetros de Entrada")
 
 # --- Input Features (Now aligned with the model's expected features) ---
-# Based on the error, the model expects:
-# 'edad', 'acceso_internet', 'asistencia', 'horas_estudio', 'materias_perdidas', 'nivel_socioeconomico'
+# Based on the latest error, the model expects:
+# 'edad', 'promedio', 'trabaja', 'uso_plataforma'
 
 # 'edad' seems to be correct, keeping it.
 age = st.sidebar.slider("Edad del Estudiante", 18, 60, 20)
 
-# New: 'acceso_internet'
-acceso_internet = st.sidebar.selectbox("¿Tiene acceso a internet?", ['Sí', 'No'])
-acceso_internet_mapping = {'Sí': 1, 'No': 0}
+# New: 'promedio' (e.g., GPA or average grade)
+promedio = st.sidebar.slider("Promedio Académico", 0.0, 5.0, 3.5, 0.1)
 
-# New: 'asistencia' (e.g., attendance percentage)
-asistencia = st.sidebar.slider("Porcentaje de Asistencia (%)", 0, 100, 90)
+# New: 'trabaja' (binary: 0 for No, 1 for Yes)
+trabaja = st.sidebar.selectbox("¿El estudiante trabaja?", ['No', 'Sí'])
+trabaja_mapping = {'No': 0, 'Sí': 1}
 
-# New: 'horas_estudio' (e.g., hours per week)
-horas_estudio = st.sidebar.slider("Horas de Estudio Semanales", 0, 50, 15)
-
-# New: 'materias_perdidas' (e.g., number of failed courses)
-materias_perdidas = st.sidebar.slider("Número de Materias Perdidas", 0, 10, 0)
-
-# New: 'nivel_socioeconomico'
-nivel_socioeconomico = st.sidebar.selectbox("Nivel Socioeconómico", ['Bajo', 'Medio', 'Alto'])
-nivel_socioeconomico_mapping = {'Bajo': 0, 'Medio': 1, 'Alto': 2}
+# New: 'uso_plataforma' (e.g., hours per day/week on platform)
+uso_plataforma = st.sidebar.slider("Horas de Uso de la Plataforma Semanal", 0, 40, 10)
 
 # Create a dictionary for the input features
 input_data = {
     'edad': age,
-    'acceso_internet': acceso_internet_mapping[acceso_internet],
-    'asistencia': asistencia,
-    'horas_estudio': horas_estudio,
-    'materias_perdidas': materias_perdidas,
-    'nivel_socioeconomico': nivel_socioeconomico_mapping[nivel_socioeconomico]
+    'promedio': promedio,
+    'trabaja': trabaja_mapping[trabaja],
+    'uso_plataforma': uso_plataforma
 }
 
 # Convert input data to a Pandas DataFrame
